@@ -1,5 +1,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 
+:root {
+    --bg-color: #c9d6ff;
+    --container-bg: #ffffff;
+    --text-main: #333333;
+    --text-span: #666666;
+    --input-bg: #eeeeee;
+    --btn-bg: #512da8;
+    --toggle-gradient: linear-gradient(to right, #5c6bc0, #512da8);
+}
+
+/* التبديل التلقائي للوضع الليلي بناءً على إعدادات الجهاز */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #0f172a;
+        --container-bg: #1e293b;
+        --text-main: #f8fafc;
+        --text-span: #94a3b8;
+        --input-bg: #334155;
+        --btn-bg: #6366f1;
+        --toggle-gradient: linear-gradient(to right, #4338ca, #6366f1);
+    }
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -8,17 +31,18 @@
 }
 
 body {
-    background-color: #c9d6ff;
-    background: linear-gradient(to right, #e2e2e2, #c9d6ff);
+    background-color: var(--bg-color);
+    background: linear-gradient(to right, #e2e2e2, var(--bg-color));
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     height: 100vh;
+    transition: all 0.5s ease;
 }
 
 .container {
-    background-color: #fff;
+    background-color: var(--container-bg);
     border-radius: 30px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
     position: relative;
@@ -26,28 +50,16 @@ body {
     width: 768px;
     max-width: 100%;
     min-height: 480px;
+    backdrop-filter: blur(5px); /* تأثير الزجاج */
 }
 
-.container p {
-    font-size: 14px;
-    line-height: 20px;
-    letter-spacing: 0.3px;
-    margin: 20px 0;
-}
-
-.container span {
-    font-size: 12px;
-}
-
-.container a {
-    color: #333;
-    font-size: 13px;
-    text-decoration: none;
-    margin: 15px 0 10px;
-}
+.container h1 { color: var(--text-main); }
+.container p { font-size: 14px; line-height: 20px; color: var(--text-main); margin: 20px 0; }
+.container span { font-size: 12px; color: var(--text-span); }
+.container a { color: var(--text-main); font-size: 13px; text-decoration: none; margin: 15px 0 10px; }
 
 .container button {
-    background-color: #512da8;
+    background-color: var(--btn-bg);
     color: #fff;
     font-size: 12px;
     padding: 10px 45px;
@@ -58,15 +70,14 @@ body {
     text-transform: uppercase;
     margin-top: 10px;
     cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.3s ease;
 }
 
-.container button.hidden {
-    background-color: transparent;
-    border-color: #fff;
-}
+.container button:active { transform: scale(0.95); }
+.container button.hidden { background-color: transparent; border-color: #fff; }
 
 .container form {
-    background-color: #fff;
+    background-color: var(--container-bg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -75,15 +86,32 @@ body {
     height: 100%;
 }
 
-.container input {
-    background-color: #eee;
-    border: none;
+/* تحسين شكل المدخلات */
+.input-group {
+    position: relative;
+    width: 100%;
     margin: 8px 0;
+}
+
+.container input {
+    background-color: var(--input-bg);
+    border: none;
     padding: 10px 15px;
     font-size: 13px;
     border-radius: 8px;
     width: 100%;
     outline: none;
+    color: var(--text-main);
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--text-span);
+    font-size: 14px;
 }
 
 .form-container {
@@ -93,45 +121,17 @@ body {
     transition: all 0.6s ease-in-out;
 }
 
-.sign-in {
-    left: 0;
-    width: 50%;
-    z-index: 2;
-}
-
-.container.active .sign-in {
-    transform: translateX(100%);
-}
-
-.sign-up {
-    left: 0;
-    width: 50%;
-    opacity: 0;
-    z-index: 1;
-}
-
-.container.active .sign-up {
-    transform: translateX(100%);
-    opacity: 1;
-    z-index: 5;
-    animation: move 0.6s;
-}
+.sign-in { left: 0; width: 50%; z-index: 2; }
+.container.active .sign-in { transform: translateX(100%); }
+.sign-up { left: 0; width: 50%; opacity: 0; z-index: 1; }
+.container.active .sign-up { transform: translateX(100%); opacity: 1; z-index: 5; animation: move 0.6s; }
 
 @keyframes move {
-    0%, 49.99% {
-        opacity: 0;
-        z-index: 1;
-    }
-    50%, 100% {
-        opacity: 1;
-        z-index: 5;
-    }
+    0%, 49.99% { opacity: 0; z-index: 1; }
+    50%, 100% { opacity: 1; z-index: 5; }
 }
 
-.social-icons {
-    margin: 20px 0;
-}
-
+.social-icons { margin: 20px 0; }
 .social-icons a {
     border: 1px solid #ccc;
     border-radius: 20%;
@@ -141,7 +141,9 @@ body {
     margin: 0 3px;
     width: 40px;
     height: 40px;
+    transition: 0.3s;
 }
+.social-icons a:hover { background-color: var(--btn-bg); color: white; border-color: var(--btn-bg); }
 
 .toggle-container {
     position: absolute;
@@ -155,27 +157,21 @@ body {
     z-index: 1000;
 }
 
-.container.active .toggle-container {
-    transform: translateX(-100%);
-    border-radius: 0 150px 100px 0;
-}
+.container.active .toggle-container { transform: translateX(-100%); border-radius: 0 150px 100px 0; }
 
 .toggle {
-    background-color: #512da8;
+    background-color: var(--btn-bg);
     height: 100%;
-    background: linear-gradient(to right, #5c6bc0, #512da8);
+    background: var(--toggle-gradient);
     color: #fff;
     position: relative;
     left: -100%;
-    height: 100%;
     width: 200%;
     transform: translateX(0);
     transition: all 0.6s ease-in-out;
 }
 
-.container.active .toggle {
-    transform: translateX(50%);
-}
+.container.active .toggle { transform: translateX(50%); }
 
 .toggle-panel {
     position: absolute;
@@ -188,23 +184,17 @@ body {
     padding: 0 30px;
     text-align: center;
     top: 0;
-    transform: translateX(0);
     transition: all 0.6s ease-in-out;
 }
 
-.toggle-left {
-    transform: translateX(-200%);
-}
+.toggle-left { transform: translateX(-200%); }
+.container.active .toggle-left { transform: translateX(0); }
+.toggle-right { right: 0; transform: translateX(0); }
+.container.active .toggle-right { transform: translateX(200%); }
 
-.container.active .toggle-left {
-    transform: translateX(0);
-}
-
-.toggle-right {
-    right: 0;
-    transform: translateX(0);
-}
-
-.container.active .toggle-right {
-    transform: translateX(200%);
+/* تحسين تجاوب الموبايل */
+@media (max-width: 600px) {
+    .container { width: 95%; min-height: 500px; }
+    .toggle-container { display: none; }
+    .form-container { width: 100%; }
 }
