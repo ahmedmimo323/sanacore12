@@ -1,60 +1,47 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const container = document.getElementById('container');
-    const registerBtn = document.getElementById('register');
-    const loginBtn = document.getElementById('login');
+const container = document.getElementById('container');
+const registerBtn = document.getElementById('register');
+const loginBtn = document.getElementById('login');
 
-    // تبديل الواجهة
-    registerBtn.addEventListener('click', () => container.classList.add("active"));
-    loginBtn.addEventListener('click', () => container.classList.remove("active"));
+// التبديل بين الـ Sign In والـ Sign Up (الكود القديم)
+registerBtn.addEventListener('click', () => {
+    container.classList.add("active");
+});
 
-    // منطق التسجيل (حفظ البيانات)
-    const signUpForm = document.getElementById('signUpForm');
-    signUpForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name = document.getElementById('reg-name').value;
-        const email = document.getElementById('reg-email').value;
-        const pass = document.getElementById('reg-pass').value;
+loginBtn.addEventListener('click', () => {
+    container.classList.remove("active");
+});
 
-        // تخزين البيانات في ذاكرة المتصفح
-        localStorage.setItem('db_email', email);
-        localStorage.setItem('db_pass', pass);
-        localStorage.setItem('db_name', name);
+// --- الجزء الجديد: ربط صفحة تسجيل الدخول بموقع Sana ---
 
-        alert("تم إنشاء الحساب! سجل دخولك الآن بنفس البيانات.");
-        container.classList.remove("active");
-    });
+// أولاً: الوصول للفورم الخاص بـ Sign In
+const signInForm = document.querySelector('.sign-in form');
 
-    // منطق الدخول (التحقق من البيانات)
-    const signInForm = document.getElementById('signInForm');
-    signInForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const emailVal = document.getElementById('login-email').value;
-        const passVal = document.getElementById('login-pass').value;
+signInForm.addEventListener('submit', (e) => {
+    e.preventDefault(); // منع الصفحة من التحميل الافتراضي
 
-        const savedEmail = localStorage.getItem('db_email');
-        const savedPass = localStorage.getItem('db_pass');
-        const savedName = localStorage.getItem('db_name');
+    // هنا تقدر تضيف شروط لو حابب تتأكد من الإيميل والباسورد
+    // حالياً بمجرد الضغط هيحولك للموقع:
+    window.location.href = "https://ahmedmimo323.github.io/sana/";
+});
 
-        if (emailVal === savedEmail && passVal === savedPass) {
-            alert(`مرحباً ${savedName}! يتم توجيهك الآن...`);
-            window.location.href = "https://ahmedmimo323.github.io/sana/";
+// ثانياً: الوصول للفورم الخاص بـ Sign Up (لو حابب يحول لمكان تاني أو نفس المكان)
+const signUpForm = document.querySelector('.sign-up form');
+signUpForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    window.location.href = "https://ahmedmimo323.github.io/sana/";
+});
+
+// كود أيقونة العين (إظهار الباسورد) اللي ضفناه سابقاً
+document.querySelectorAll('.toggle-password').forEach(icon => {
+    icon.addEventListener('click', function() {
+        const inputId = this.getAttribute('data-target');
+        const input = document.getElementById(inputId);
+        if (input.type === 'password') {
+            input.type = 'text';
+            this.classList.replace('fa-eye', 'fa-eye-slash');
         } else {
-            alert("خطأ! الحساب غير موجود أو البيانات غير صحيحة.");
+            input.type = 'password';
+            this.classList.replace('fa-eye-slash', 'fa-eye');
         }
-    });
-
-    // ميزة العين لإظهار كلمة المرور
-    document.querySelectorAll('.toggle-password').forEach(icon => {
-        icon.addEventListener('click', function() {
-            const targetId = this.getAttribute('data-target');
-            const input = document.getElementById(targetId);
-            if (input.type === 'password') {
-                input.type = 'text';
-                this.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                input.type = 'password';
-                this.classList.replace('fa-eye-slash', 'fa-eye');
-            }
-        });
     });
 });
