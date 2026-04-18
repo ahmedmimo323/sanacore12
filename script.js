@@ -1,47 +1,77 @@
-const container = document.getElementById('container');
-const registerBtn = document.getElementById('register');
-const loginBtn = document.getElementById('login');
+document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('container');
+    const registerBtn = document.getElementById('register');
+    const loginBtn = document.getElementById('login');
 
-// التبديل بين الـ Sign In والـ Sign Up (الكود القديم)
-registerBtn.addEventListener('click', () => {
-    container.classList.add("active");
-});
+    // 1. التبديل بين واجهة Sign In و Sign Up
+    if (registerBtn) {
+        registerBtn.addEventListener('click', () => {
+            container.classList.add("active");
+        });
+    }
 
-loginBtn.addEventListener('click', () => {
-    container.classList.remove("active");
-});
+    if (loginBtn) {
+        loginBtn.addEventListener('click', () => {
+            container.classList.remove("active");
+        });
+    }
 
-// --- الجزء الجديد: ربط صفحة تسجيل الدخول بموقع Sana ---
+    // 2. منطق تسجيل حساب جديد (Sign Up) - يحفظ البيانات في المتصفح
+    const signUpForm = document.querySelector('.sign-up form');
+    if (signUpForm) {
+        signUpForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = signUpForm.querySelector('input[type="text"]').value;
+            const email = signUpForm.querySelector('input[type="email"]').value;
+            const password = signUpForm.querySelector('input[type="password"]').value;
 
-// أولاً: الوصول للفورم الخاص بـ Sign In
-const signInForm = document.querySelector('.sign-in form');
+            // تخزين البيانات (Database Simulation)
+            localStorage.setItem('storedEmail', email);
+            localStorage.setItem('storedPassword', password);
+            localStorage.setItem('storedName', name);
 
-signInForm.addEventListener('submit', (e) => {
-    e.preventDefault(); // منع الصفحة من التحميل الافتراضي
+            alert("تم إنشاء الحساب بنجاح يا " + name + "! يمكنك الآن تسجيل الدخول.");
+            container.classList.remove("active"); // نقله تلقائياً لصفحة تسجيل الدخول
+        });
+    }
 
-    // هنا تقدر تضيف شروط لو حابب تتأكد من الإيميل والباسورد
-    // حالياً بمجرد الضغط هيحولك للموقع:
-    window.location.href = "https://ahmedmimo323.github.io/sana/";
-});
+    // 3. منطق تسجيل الدخول (Sign In) - التحقق والتحويل لصفحة Sana
+    const signInForm = document.querySelector('.sign-in form');
+    if (signInForm) {
+        signInForm.addEventListener('submit', (e) => {
+            e.preventDefault();
 
-// ثانياً: الوصول للفورم الخاص بـ Sign Up (لو حابب يحول لمكان تاني أو نفس المكان)
-const signUpForm = document.querySelector('.sign-up form');
-signUpForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    window.location.href = "https://ahmedmimo323.github.io/sana/";
-});
+            const emailInput = signInForm.querySelector('input[type="email"]').value;
+            const passInput = signInForm.querySelector('input[type="password"]').value;
 
-// كود أيقونة العين (إظهار الباسورد) اللي ضفناه سابقاً
-document.querySelectorAll('.toggle-password').forEach(icon => {
-    icon.addEventListener('click', function() {
-        const inputId = this.getAttribute('data-target');
-        const input = document.getElementById(inputId);
-        if (input.type === 'password') {
-            input.type = 'text';
-            this.classList.replace('fa-eye', 'fa-eye-slash');
-        } else {
-            input.type = 'password';
-            this.classList.replace('fa-eye-slash', 'fa-eye');
-        }
+            // جلب البيانات المسجلة سابقاً
+            const savedEmail = localStorage.getItem('storedEmail');
+            const savedPass = localStorage.getItem('storedPassword');
+
+            // شرط التحقق: هل البيانات مطابقة لما تم تسجيله؟
+            if (emailInput === savedEmail && passInput === savedPass) {
+                alert("تم التحقق بنجاح! جاري تحويلك إلى منصة Sana...");
+                window.location.href = "https://ahmedmimo323.github.io/sana/"; // الربط المطلوب
+            } else {
+                alert("خطأ: الإيميل أو كلمة المرور غير صحيحة، أو أنك لم تسجل حساباً بعد.");
+            }
+        });
+    }
+
+    // 4. ميزة إظهار وإخفاء كلمة المرور (Toggle Password)
+    document.querySelectorAll('.toggle-password').forEach(icon => {
+        icon.addEventListener('click', function() {
+            const inputId = this.getAttribute('data-target');
+            const input = document.getElementById(inputId);
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                this.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                this.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        });
     });
 });
