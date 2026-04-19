@@ -50,7 +50,7 @@ body {
     width: 768px;
     max-width: 100%;
     min-height: 480px;
-    backdrop-filter: blur(5px); /* تأثير الزجاج */
+    backdrop-filter: blur(5px);
 }
 
 .container h1 { color: var(--text-main); }
@@ -87,9 +87,8 @@ body {
 }
 
 /* تحسين شكل المدخلات */
-/* تعديل مسافة خانة الاسم فقط في صفحة التسجيل */
 #reg-name {
-    margin-bottom: 8px !important; /* يمكنك زيادة أو تقليل هذه القيمة حسب رغبتك */
+    margin-bottom: 8px !important; 
     margin-top: 8px !important;
 }
 .input-group {
@@ -136,19 +135,37 @@ body {
     50%, 100% { opacity: 1; z-index: 5; }
 }
 
-.social-icons { margin: 20px 0; }
+/* تعديل قسم الأيقونات ليتناسب مع زر جوجل الرسمي */
+.social-icons { 
+    margin: 20px 0; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* مسافة متناسقة بين الأيقونات */
+}
+
 .social-icons a {
     border: 1px solid #ccc;
     border-radius: 20%;
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    margin: 0 3px;
     width: 40px;
     height: 40px;
     transition: 0.3s;
+    text-decoration: none;
 }
-.social-icons a:hover { background-color: var(--btn-bg); color: white; border-color: var(--btn-bg); }
+
+.social-icons a:hover { 
+    background-color: var(--btn-bg); 
+    color: white; 
+    border-color: var(--btn-bg); 
+}
+
+/* تنسيق إضافي لزر جوجل لضمان المحاذاة */
+.g_id_signin {
+    margin-top: 2px;
+}
 
 .toggle-container {
     position: absolute;
@@ -197,7 +214,6 @@ body {
 .toggle-right { right: 0; transform: translateX(0); }
 .container.active .toggle-right { transform: translateX(200%); }
 
-/* تحسين تجاوب الموبايل */
 @media (max-width: 600px) {
     .container { width: 95%; min-height: 500px; }
     .toggle-container { display: none; }
