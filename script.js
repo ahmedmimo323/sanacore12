@@ -75,3 +75,37 @@ function handleCredentialResponse(response) {
     // التحويل إلى الصفحة المطلوبة
     window.location.href = "https://ahmedmimo323.github.io/sana/";
 }
+
+// ==========================================
+// --- الجزء الجديد: إعدادات دخول فيسبوك ---
+// ==========================================
+
+window.fbAsyncInit = function() {
+    FB.init({
+        appId      : '976294014925847', // الـ App ID الخاص بك
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v18.0'
+    });
+};
+
+// الدالة التي تعمل عند الضغط على أيقونة فيسبوك في HTML
+function fbLogin() {
+    FB.login(function(response) {
+        if (response.status === 'connected') {
+            // جلب بيانات المستخدم بعد نجاح الاتصال
+            FB.api('/me', {fields: 'name,email'}, function(userData) {
+                console.log('نجح الدخول عبر فيسبوك: ' + userData.name);
+                
+                // حفظ الاسم للترحيب والتحويل
+                localStorage.setItem('user_name', userData.name);
+                localStorage.setItem('isLoggedIn', 'true');
+
+                alert("أهلاً بك يا " + userData.name + "! تم الدخول بواسطة Facebook.");
+                window.location.href = "https://ahmedmimo323.github.io/sana/";
+            });
+        } else {
+            console.log('فشل تسجيل الدخول أو تم إلغاؤه من قبل المستخدم.');
+        }
+    }, {scope: 'public_profile,email'});
+}
