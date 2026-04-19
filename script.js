@@ -11,18 +11,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const signUpForm = document.getElementById('signUpForm');
     signUpForm.onsubmit = (e) => {
         e.preventDefault();
-        
-        const email = document.getElementById('reg-email').value;
-        const pass = document.getElementById('reg-pass').value;
-        const name = document.getElementById('reg-name').value;
-
-        // الحفظ في ذاكرة المتصفح
-        localStorage.setItem('user_email', email);
-        localStorage.setItem('user_pass', pass);
-        localStorage.setItem('user_name', name);
-
-        alert("تم حفظ حسابك بنجاح! يمكنك الآن الذهاب لتسجيل الدخول.");
-        container.classList.remove("active"); // نقله لواجهة تسجيل الدخول
+        // إضافة منطق الحفظ الذي كان ينقص الكود
+        localStorage.setItem('user_email', document.getElementById('reg-email').value);
+        localStorage.setItem('user_pass', document.getElementById('reg-pass').value);
+        localStorage.setItem('user_name', document.getElementById('reg-name').value);
+        alert("تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.");
+        container.classList.remove("active");
     };
 
     // --- الجزء الثاني: التحقق فقط (Sign In) ---
@@ -60,3 +54,24 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     });
 });
+
+/** * إضافة وظيفة دخول جوجل (توضع خارج نطاق DOMContentLoaded لتكون عالمية)
+ * هذه الوظيفة يتم استدعاؤها بواسطة Google Identity Services عند نجاح الدخول
+ */
+function handleCredentialResponse(response) {
+    // فك تشفير البيانات القادمة من جوجل (JWT)
+    const base64Url = response.credential.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const payload = JSON.parse(window.atob(base64));
+
+    console.log("تم تسجيل الدخول عبر جوجل بنجاح");
+    
+    // حفظ اسم المستخدم القادم من جوجل للترحيب به
+    localStorage.setItem('user_name', payload.name);
+    localStorage.setItem('isLoggedIn', 'true');
+
+    alert("أهلاً بك يا " + payload.name + "! تم الدخول بواسطة Google.");
+    
+    // التحويل إلى الصفحة المطلوبة
+    window.location.href = "https://ahmedmimo323.github.io/sana/";
+}
