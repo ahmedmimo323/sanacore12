@@ -40,7 +40,8 @@
                     </div>
                     <div class="g_id_signin" data-type="icon" data-shape="circle" data-theme="outline" data-size="large"></div>
                     
-                    <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" class="icon" onclick="fbLogin(); return false;"><i class="fa-brands fa-facebook-f"></i></a>
+                    
                     <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
                     <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
                 </div>
@@ -72,6 +73,10 @@
     </div>
 
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+
     <script src="script.js"></script>
 </body>
 </html>
