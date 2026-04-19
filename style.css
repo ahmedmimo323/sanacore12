@@ -154,6 +154,7 @@ body {
     height: 40px;
     transition: 0.3s;
     text-decoration: none;
+    cursor: pointer; /* للتأكد من أن الأيقونات قابلة للضغط */
 }
 
 .social-icons a:hover { 
