@@ -89,8 +89,8 @@ body {
 /* تحسين شكل المدخلات */
 /* تعديل مسافة خانة الاسم فقط في صفحة التسجيل */
 #reg-name {
-    margin-bottom: 25px !important; /* يمكنك زيادة أو تقليل هذه القيمة حسب رغبتك */
-    margin-top: 10px !important;
+    margin-bottom: 20px !important; /* يمكنك زيادة أو تقليل هذه القيمة حسب رغبتك */
+    margin-top: 8px !important;
 }
 .input-group {
     position: relative;
