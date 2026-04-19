@@ -8,6 +8,7 @@
     --input-bg: #eeeeee;
     --btn-bg: #512da8;
     --toggle-gradient: linear-gradient(to right, #5c6bc0, #512da8);
+    --toast-bg: #512da8; /* لون التنبيه */
 }
 
 /* التبديل التلقائي للوضع الليلي بناءً على إعدادات الجهاز */
@@ -20,6 +21,7 @@
         --input-bg: #334155;
         --btn-bg: #6366f1;
         --toggle-gradient: linear-gradient(to right, #4338ca, #6366f1);
+        --toast-bg: #6366f1; /* لون التنبيه في الوضع الليلي */
     }
 }
 
@@ -40,6 +42,42 @@ body {
     height: 100vh;
     transition: all 0.5s ease;
 }
+
+/* =========================================
+   تنسيق التنبيه المؤقت (Custom Toast)
+   ========================================= */
+.custom-toast {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--toast-bg);
+    color: white;
+    padding: 12px 30px;
+    border-radius: 50px; /* شكل بيضاوي أنيق */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    min-width: 250px;
+    animation: slideDownFade 0.5s ease forwards;
+    transition: all 0.4s ease;
+}
+
+.custom-toast.hide {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-30px);
+}
+
+@keyframes slideDownFade {
+    from { opacity: 0; transform: translateX(-50%) translateY(-30px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* =========================================
+   باقي تنسيقات الـ Container والـ Forms
+   ========================================= */
 
 .container {
     background-color: var(--container-bg);
@@ -135,13 +173,12 @@ body {
     50%, 100% { opacity: 1; z-index: 5; }
 }
 
-/* تعديل قسم الأيقونات ليتناسب مع زر جوجل الرسمي */
 .social-icons { 
     margin: 20px 0; 
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px; /* مسافة متناسقة بين الأيقونات */
+    gap: 8px; 
 }
 
 .social-icons a {
@@ -154,7 +191,7 @@ body {
     height: 40px;
     transition: 0.3s;
     text-decoration: none;
-    cursor: pointer; /* للتأكد من أن الأيقونات قابلة للضغط */
+    cursor: pointer; 
 }
 
 .social-icons a:hover { 
@@ -163,7 +200,6 @@ body {
     border-color: var(--btn-bg); 
 }
 
-/* تنسيق إضافي لزر جوجل لضمان المحاذاة */
 .g_id_signin {
     margin-top: 2px;
 }
