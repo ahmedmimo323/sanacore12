@@ -4,41 +4,41 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginBtn = document.getElementById('login');
 
     // أزرار التبديل بين واجهة الدخول والتسجيل
-    registerBtn.onclick = () => container.classList.add("active");
-    loginBtn.onclick = () => container.classList.remove("active");
+    if(registerBtn) registerBtn.onclick = () => container.classList.add("active");
+    if(loginBtn) loginBtn.onclick = () => container.classList.remove("active");
 
-    // --- الجزء الأول: حفظ البيانات (Sign Up فقط) ---
+    // --- الجزء الأول: حفظ البيانات (Sign Up) ---
     const signUpForm = document.getElementById('signUpForm');
-    signUpForm.onsubmit = (e) => {
-        e.preventDefault();
-        // إضافة منطق الحفظ الذي كان ينقص الكود
-        localStorage.setItem('user_email', document.getElementById('reg-email').value);
-        localStorage.setItem('user_pass', document.getElementById('reg-pass').value);
-        localStorage.setItem('user_name', document.getElementById('reg-name').value);
-        alert("تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.");
-        container.classList.remove("active");
-    };
+    if(signUpForm) {
+        signUpForm.onsubmit = (e) => {
+            e.preventDefault();
+            localStorage.setItem('user_email', document.getElementById('reg-email').value);
+            localStorage.setItem('user_pass', document.getElementById('reg-pass').value);
+            localStorage.setItem('user_name', document.getElementById('reg-name').value);
+            alert("تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.");
+            container.classList.remove("active");
+        };
+    }
 
     // --- الجزء الثاني: التحقق فقط (Sign In) ---
     const signInForm = document.getElementById('signInForm');
-    signInForm.onsubmit = (e) => {
-        e.preventDefault();
+    if(signInForm) {
+        signInForm.onsubmit = (e) => {
+            e.preventDefault();
+            const emailInput = document.getElementById('login-email').value;
+            const passInput = document.getElementById('login-pass').value;
 
-        const emailInput = document.getElementById('login-email').value;
-        const passInput = document.getElementById('login-pass').value;
+            const savedEmail = localStorage.getItem('user_email');
+            const savedPass = localStorage.getItem('user_pass');
 
-        // جلب البيانات التي تم حفظها في الـ Sign Up
-        const savedEmail = localStorage.getItem('user_email');
-        const savedPass = localStorage.getItem('user_pass');
-
-        // المقارنة
-        if (emailInput === savedEmail && passInput === savedPass) {
-            alert("بيانات صحيحة! جاري التحويل...");
-            window.location.href = "https://ahmedmimo323.github.io/sana/";
-        } else {
-            alert("خطأ! البيانات غير مطابقة أو لم تقم بإنشاء حساب بعد.");
-        }
-    };
+            if (emailInput === savedEmail && passInput === savedPass) {
+                alert("بيانات صحيحة! جاري التحويل...");
+                window.location.href = "https://ahmedmimo323.github.io/sana/";
+            } else {
+                alert("خطأ! البيانات غير مطابقة أو لم تقم بإنشاء حساب بعد.");
+            }
+        };
+    }
 
     // ميزة إظهار كلمة المرور
     document.querySelectorAll('.toggle-password').forEach(icon => {
@@ -53,59 +53,62 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
     });
+
+    // --- منطق استقبال العودة من GitHub ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const githubCode = urlParams.get('code');
+
+    if (githubCode) {
+        // تنظيف الرابط للحفاظ على المظهر الاحترافي
+        window.history.replaceState({}, document.title, window.location.pathname);
+        console.log("GitHub Auth Code Received:", githubCode);
+        
+        localStorage.setItem('isLoggedIn', 'true');
+        alert("أهلاً بك! تم تسجيل الدخول عبر GitHub بنجاح.");
+        window.location.href = "https://ahmedmimo323.github.io/sana/";
+    }
 });
 
-/** * إضافة وظيفة دخول جوجل (توضع خارج نطاق DOMContentLoaded لتكون عالمية)
- * هذه الوظيفة يتم استدعاؤها بواسطة Google Identity Services عند نجاح الدخول
- */
+/** وظيفة دخول جوجل **/
 function handleCredentialResponse(response) {
-    // فك تشفير البيانات القادمة من جوجل (JWT)
     const base64Url = response.credential.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
     const payload = JSON.parse(window.atob(base64));
 
-    console.log("تم تسجيل الدخول عبر جوجل بنجاح");
-    
-    // حفظ اسم المستخدم القادم من جوجل للترحيب به
     localStorage.setItem('user_name', payload.name);
     localStorage.setItem('isLoggedIn', 'true');
-
     alert("أهلاً بك يا " + payload.name + "! تم الدخول بواسطة Google.");
-    
-    // التحويل إلى الصفحة المطلوبة
     window.location.href = "https://ahmedmimo323.github.io/sana/";
 }
 
-// ==========================================
-// --- الجزء الجديد: إعدادات دخول فيسبوك ---
-// ==========================================
-
+/** وظيفة دخول فيسبوك **/
 window.fbAsyncInit = function() {
     FB.init({
-        appId      : '976294014925847', // الـ App ID الخاص بك
+        appId      : '976294014925847', 
         cookie     : true,
         xfbml      : true,
         version    : 'v18.0'
     });
 };
 
-// الدالة التي تعمل عند الضغط على أيقونة فيسبوك في HTML
 function fbLogin() {
     FB.login(function(response) {
         if (response.status === 'connected') {
-            // جلب بيانات المستخدم بعد نجاح الاتصال
             FB.api('/me', {fields: 'name,email'}, function(userData) {
-                console.log('نجح الدخول عبر فيسبوك: ' + userData.name);
-                
-                // حفظ الاسم للترحيب والتحويل
                 localStorage.setItem('user_name', userData.name);
                 localStorage.setItem('isLoggedIn', 'true');
-
                 alert("أهلاً بك يا " + userData.name + "! تم الدخول بواسطة Facebook.");
                 window.location.href = "https://ahmedmimo323.github.io/sana/";
             });
-        } else {
-            console.log('فشل تسجيل الدخول أو تم إلغاؤه من قبل المستخدم.');
         }
     }, {scope: 'public_profile,email'});
+}
+
+/** وظيفة دخول GitHub (جديدة) **/
+function githubLogin() {
+    const CLIENT_ID = "Ov23liDgL358vg1eGya4"; 
+    // الرابط الذي سيعود إليه المستخدم (نفس صفحة الدخول الحالية)
+    const redirectUri = window.location.href.split('?')[0]; 
+    const githubUrl = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${redirectUri}&scope=user`;
+    window.location.href = githubUrl;
 }
