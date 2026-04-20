@@ -117,7 +117,7 @@ window.handleCredentialResponse = (response) => {
             }, 2000);
         })
         .catch((error) => {
-            console.error("Firebase Login Error:", error);
-            alert("حدث خطأ أثناء الاتصال بقاعدة بيانات Firebase.");
-        });
+    console.error("Firebase Details:", error); // سيظهر لك كود الخطأ بالتفصيل في الـ Console
+    alert("خطأ: " + error.message); 
+});
 };
