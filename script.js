@@ -4,7 +4,7 @@ import { getAuth, GoogleAuthProvider, signInWithCredential } from "https://www.g
 
 // 2. إعدادات Firebase الخاصة بك (مأخوذة من لقطة الشاشة التي أرسلتها)
 const firebaseConfig = {
-  apiKey: "AIzaSyCTAp16kn8Z2702G7wK9H-a3bW9hiNKU9A", // تأكد من نقل هذا السطر كاملاً
+  apiKey: "AIzaSyCTAp16kn8Z27O2G7wK9H-a3bW9hiNKU9A", // تم تصحيح الحرف من 0 إلى O
   authDomain: "sanad-platform-493800.firebaseapp.com",
   projectId: "sanad-platform-493800",
   storageBucket: "sanad-platform-493800.firebasestorage.app",
