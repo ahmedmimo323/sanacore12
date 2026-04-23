@@ -1,13 +1,10 @@
-/**
- * 1. دالة التنبيه (Toast) - وضعناها في البداية لتكون متاحة للجميع
- */
+// 1. جعل الدالة عالمية عشان تشتغل مع جوجل وفيسبوك بدون مشاكل
 function showToast(message, callback) {
     const toast = document.createElement('div');
     toast.className = 'custom-toast';
     toast.innerText = message;
     document.body.appendChild(toast);
 
-    // تختفي الرسالة بعد 2 ثانية
     setTimeout(() => {
         toast.classList.add('hide');
         setTimeout(() => {
@@ -17,48 +14,39 @@ function showToast(message, callback) {
     }, 2000);
 }
 
-/**
- * 2. الدوال العالمية الخاصة بـ Google و Facebook
- */
+// 2. دالة جوجل (خارج النطاق)
 function handleCredentialResponse(response) {
-    try {
-        const payload = JSON.parse(window.atob(response.credential.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
-        localStorage.setItem('user_name', payload.name);
-        
-        showToast(`مرحباً بك يا ${payload.name}! تم الدخول بواسطة Google`, () => {
-            window.location.href = "https://ahmedmimo323.github.io/sana/";
-        });
-    } catch (e) {
-        showToast("فشل تسجيل الدخول عبر جوجل");
-    }
+    const payload = JSON.parse(window.atob(response.credential.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+    localStorage.setItem('user_name', payload.name);
+    
+    showToast("مرحباً بك! تم الدخول بواسطة Google", () => {
+        // التحويل لنفس المجلد الحالي لضمان اشتغال الرابط
+        window.location.href = "index.html"; 
+    });
 }
 
+// 3. دالة فيسبوك (خارج النطاق)
 function fbLogin() {
     FB.login(function(response) {
         if (response.status === 'connected') {
             FB.api('/me', {fields: 'name'}, function(userData) {
                 localStorage.setItem('user_name', userData.name);
                 showToast("تم الدخول بواسطة Facebook", () => {
-                    window.location.href = "https://ahmedmimo323.github.io/sana/";
+                    window.location.href = "index.html";
                 });
             });
         }
     }, {scope: 'public_profile,email'});
 }
 
-/**
- * 3. تشغيل الكود عند تحميل الصفحة
- */
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('container');
     const registerBtn = document.getElementById('register');
     const loginBtn = document.getElementById('login');
 
-    // أزرار التبديل بين Sign In و Sign Up
     if(registerBtn) registerBtn.onclick = () => container.classList.add("active");
     if(loginBtn) loginBtn.onclick = () => container.classList.remove("active");
 
-    // --- حفظ البيانات (Sign Up) ---
     const signUpForm = document.getElementById('signUpForm');
     if(signUpForm) {
         signUpForm.onsubmit = (e) => {
@@ -73,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // --- التحقق (Sign In) ---
     const signInForm = document.getElementById('signInForm');
     if(signInForm) {
         signInForm.onsubmit = (e) => {
@@ -85,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (emailInput === savedEmail && passInput === savedPass) {
                 showToast("بيانات صحيحة! جاري التحويل...", () => {
-                    window.location.href = "https://ahmedmimo323.github.io/sana/";
+                    window.location.href = "index.html";
                 });
             } else {
                 showToast("خطأ! البيانات غير مطابقة.");
@@ -106,16 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
     });
-
-    // استقبال عودة GitHub
-    const urlParams = new URLSearchParams(window.location.search);
-    const githubCode = urlParams.get('code');
-    if (githubCode) {
-        window.history.replaceState({}, document.title, window.location.pathname);
-        showToast("تم تسجيل الدخول عبر GitHub!", () => {
-            window.location.href = "https://ahmedmimo323.github.io/sana/";
-        });
-    }
 });
 
 function githubLogin() {
