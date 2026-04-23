@@ -126,8 +126,8 @@ body {
 
 /* تحسين شكل المدخلات */
 #reg-name {
-    margin-bottom: 8px !important; 
-    margin-top: 8px !important;
+    margin-bottom: 15px !important; 
+    margin-top: 15px !important;
 }
 .input-group {
     position: relative;
