@@ -1,27 +1,9 @@
-// 1. استيراد مكتبات Firebase (نظام CDN Module)
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithCredential } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
-
-// 2. إعدادات Firebase الخاصة بك (مأخوذة من لقطة الشاشة التي أرسلتها)
-const firebaseConfig = {
-  apiKey: "AIzaSyCTAp16kn8Z27O2G7wK9H-a3bW9hiNKU9A", // تم تصحيح الحرف من 0 إلى O
-  authDomain: "sanad-platform-493800.firebaseapp.com",
-  projectId: "sanad-platform-493800",
-  storageBucket: "sanad-platform-493800.firebasestorage.app",
-  messagingSenderId: "846999771353",
-  appId: "1:846999771353:web:8dc1d15603ff2e2155c6c8",
-  measurementId: "G-KNCPYKZ7KH"
-};
-
-// 3. تهيئة التطبيق وخدمة التحقق
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('container');
     const registerBtn = document.getElementById('register');
     const loginBtn = document.getElementById('login');
 
+    // أزرار التبديل بين واجهة الدخول والتسجيل
     // دالة التنبيه المؤقت (Toast)
     function showToast(message, callback) {
         const toast = document.createElement('div');
@@ -29,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         toast.innerText = message;
         document.body.appendChild(toast);
 
+        // تختفي الرسالة بعد 2 ثانية ويتم تنفيذ الأكشن بعدها
         setTimeout(() => {
             toast.classList.add('hide');
             setTimeout(() => {
@@ -42,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(registerBtn) registerBtn.onclick = () => container.classList.add("active");
     if(loginBtn) loginBtn.onclick = () => container.classList.remove("active");
 
+    // --- الجزء الأول: حفظ البيانات (Sign Up) ---
     // --- حفظ البيانات (Sign Up) ---
     const signUpForm = document.getElementById('signUpForm');
     if(signUpForm) {
@@ -50,87 +34,123 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('user_email', document.getElementById('reg-email').value);
             localStorage.setItem('user_pass', document.getElementById('reg-pass').value);
             localStorage.setItem('user_name', document.getElementById('reg-name').value);
-
+            alert("تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.");
+            container.classList.remove("active");
+            
             showToast("تم إنشاء الحساب بنجاح!", () => {
                 container.classList.remove("active");
             });
         };
     }
 
-    // --- التحقق (Sign In) التقليدي ---
+    // --- الجزء الثاني: التحقق فقط (Sign In) ---
+    // --- التحقق (Sign In) ---
     const signInForm = document.getElementById('signInForm');
     if(signInForm) {
         signInForm.onsubmit = (e) => {
             e.preventDefault();
             const emailInput = document.getElementById('login-email').value;
             const passInput = document.getElementById('login-pass').value;
+
             const savedEmail = localStorage.getItem('user_email');
             const savedPass = localStorage.getItem('user_pass');
 
             if (emailInput === savedEmail && passInput === savedPass) {
+                alert("بيانات صحيحة! جاري التحويل...");
+                window.location.href = "https://ahmedmimo323.github.io/sana/";
                 showToast("بيانات صحيحة! جاري التحويل...", () => {
                     window.location.href = "https://ahmedmimo323.github.io/sana/";
                 });
             } else {
+                alert("خطأ! البيانات غير مطابقة أو لم تقم بإنشاء حساب بعد.");
                 showToast("خطأ! البيانات غير مطابقة.");
             }
         };
     }
-
-    // ميزة إظهار كلمة المرور
-    document.querySelectorAll('.toggle-password').forEach(icon => {
-        icon.onclick = function() {
-            const target = document.getElementById(this.getAttribute('data-target'));
-            if (target.type === 'password') {
-                target.type = 'text';
-                this.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                target.type = 'password';
-                this.classList.replace('fa-eye-slash', 'fa-eye');
-            }
+@@ -54,61 +73,52 @@
         };
     });
-});
 
-// 4. دالة جوجل (تم جعلها عالمية لتعمل مع مكتبة جوجل الخارجية)
-window.handleCredentialResponse = (response) => {
-    // إنشاء بيانات الاعتماد (Credential) من الـ Token الذي أرسله جوجل
-    const credential = GoogleAuthProvider.credential(response.credential);
+    // --- منطق استقبال العودة من GitHub ---
+    // استقبال عودة GitHub
+    const urlParams = new URLSearchParams(window.location.search);
+    const githubCode = urlParams.get('code');
 
-    // تسجيل الدخول في Firebase لحفظ المستخدم في قاعدة البيانات
-    signInWithCredential(auth, credential)
-        .then((result) => {
-            const user = result.user;
-            
-            // تخزين الاسم للعرض السريع في الموقع
-            console.log("Login Success:", user.displayName);
-
-            // حفظ الاسم في localStorage
-            localStorage.setItem('user_name', user.displayName);
-
-            // إنشاء تنبيه النجاح
-            const toast = document.createElement('div');
-            toast.className = 'custom-toast';
-            toast.innerText = `مرحباً ${user.displayName}! تم الحفظ بنجاح في Firebase`;
-            document.body.appendChild(toast);
-
-            // التحويل للموقع الرئيسي
-            // إضافة تأخير بسيط (1.5 ثانية) لضمان انتهاء العمليات الخلفية قبل التحويل
-            showToast(`مرحباً ${user.displayName}! جاري توجيهك...`);
-            
-            setTimeout(() => {
-                window.location.href = "https://ahmedmimo323.github.io/sana/";
-            }, 2000);
-                // استخدام replace بدلاً من href لضمان عدم العودة لصفحة الدخول عند الضغط على "خلف"
-                window.location.replace("https://ahmedmimo323.github.io/sana/");
-            }, 1500); 
-        })
-        .catch((error) => {
-    console.error("Firebase Details:", error); // سيظهر لك كود الخطأ بالتفصيل في الـ Console
-            console.error("Firebase Login Error:", error);
-            showToast("حدث خطأ أثناء تسجيل الدخول، حاول مرة أخرى.");
+    if (githubCode) {
+        // تنظيف الرابط للحفاظ على المظهر الاحترافي
+        window.history.replaceState({}, document.title, window.location.pathname);
+        console.log("GitHub Auth Code Received:", githubCode);
+        
+        localStorage.setItem('isLoggedIn', 'true');
+        alert("أهلاً بك! تم تسجيل الدخول عبر GitHub بنجاح.");
+        window.location.href = "https://ahmedmimo323.github.io/sana/";
+        showToast("تم تسجيل الدخول عبر GitHub!", () => {
+            window.location.href = "https://ahmedmimo323.github.io/sana/";
         });
-};
-    alert("خطأ: " + error.message); 
+    }
 });
+
+/** وظيفة دخول جوجل **/
+// وظيفة دخول جوجل (خارج النطاق لتكون عالمية)
+function handleCredentialResponse(response) {
+    const base64Url = response.credential.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const payload = JSON.parse(window.atob(base64));
+
+    const payload = JSON.parse(window.atob(response.credential.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+    localStorage.setItem('user_name', payload.name);
+    localStorage.setItem('isLoggedIn', 'true');
+    alert("أهلاً بك يا " + payload.name + "! تم الدخول بواسطة Google.");
+    window.location.href = "https://ahmedmimo323.github.io/sana/";
+}
+    
+    const toast = document.createElement('div');
+    toast.className = 'custom-toast';
+    toast.innerText = "مرحباً بك! تم الدخول بواسطة Google";
+    document.body.appendChild(toast);
+
+/** وظيفة دخول فيسبوك **/
+window.fbAsyncInit = function() {
+    FB.init({
+        appId      : '976294014925847', 
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v18.0'
+    });
 };
+    setTimeout(() => {
+        window.location.href = "https://ahmedmimo323.github.io/sana/";
+    }, 2000);
+}
+
+// وظيفة فيسبوك
+function fbLogin() {
+    FB.login(function(response) {
+        if (response.status === 'connected') {
+            FB.api('/me', {fields: 'name,email'}, function(userData) {
+            FB.api('/me', {fields: 'name'}, function(userData) {
+                localStorage.setItem('user_name', userData.name);
+                localStorage.setItem('isLoggedIn', 'true');
+                alert("أهلاً بك يا " + userData.name + "! تم الدخول بواسطة Facebook.");
+                window.location.href = "https://ahmedmimo323.github.io/sana/";
+                const toast = document.createElement('div');
+                toast.className = 'custom-toast';
+                toast.innerText = "تم الدخول بواسطة Facebook";
+                document.body.appendChild(toast);
+                setTimeout(() => {
+                    window.location.href = "https://ahmedmimo323.github.io/sana/";
+                }, 2000);
+            });
+        }
+    }, {scope: 'public_profile,email'});
+}
+
+/** وظيفة دخول GitHub (جديدة) **/
+function githubLogin() {
+    const CLIENT_ID = "Ov23liDgL358vg1eGya4"; 
+    // الرابط الذي سيعود إليه المستخدم (نفس صفحة الدخول الحالية)
+    const redirectUri = window.location.href.split('?')[0]; 
+    const githubUrl = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${redirectUri}&scope=user`;
+    window.location.href = githubUrl;
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${redirectUri}&scope=user`;
+}
