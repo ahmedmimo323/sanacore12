@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('user_email', document.getElementById('reg-email').value);
             localStorage.setItem('user_pass', document.getElementById('reg-pass').value);
             localStorage.setItem('user_name', document.getElementById('reg-name').value);
-            
+
             showToast("تم إنشاء الحساب بنجاح!", () => {
                 container.classList.remove("active");
             });
@@ -94,25 +94,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 4. دالة جوجل (تم جعلها عالمية لتعمل مع مكتبة جوجل الخارجية)
 window.handleCredentialResponse = (response) => {
+    // إنشاء بيانات الاعتماد (Credential) من الـ Token الذي أرسله جوجل
     const credential = GoogleAuthProvider.credential(response.credential);
-    
+
+    // تسجيل الدخول في Firebase لحفظ المستخدم في قاعدة البيانات
     signInWithCredential(auth, credential)
         .then((result) => {
             const user = result.user;
+            
+            // تخزين الاسم للعرض السريع في الموقع
             console.log("Login Success:", user.displayName);
 
             // حفظ الاسم في localStorage
             localStorage.setItem('user_name', user.displayName);
-            
+
+            // إنشاء تنبيه النجاح
+            const toast = document.createElement('div');
+            toast.className = 'custom-toast';
+            toast.innerText = `مرحباً ${user.displayName}! تم الحفظ بنجاح في Firebase`;
+            document.body.appendChild(toast);
+
+            // التحويل للموقع الرئيسي
             // إضافة تأخير بسيط (1.5 ثانية) لضمان انتهاء العمليات الخلفية قبل التحويل
             showToast(`مرحباً ${user.displayName}! جاري توجيهك...`);
             
             setTimeout(() => {
+                window.location.href = "https://ahmedmimo323.github.io/sana/";
+            }, 2000);
                 // استخدام replace بدلاً من href لضمان عدم العودة لصفحة الدخول عند الضغط على "خلف"
                 window.location.replace("https://ahmedmimo323.github.io/sana/");
             }, 1500); 
         })
         .catch((error) => {
+    console.error("Firebase Details:", error); // سيظهر لك كود الخطأ بالتفصيل في الـ Console
             console.error("Firebase Login Error:", error);
             showToast("حدث خطأ أثناء تسجيل الدخول، حاول مرة أخرى.");
         });
