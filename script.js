@@ -106,3 +106,34 @@ window.handleCredentialResponse = (response) => {
 // دوال تكميلية لأيقونات السوشيال ميديا الأخرى (يمكنك برمجتها لاحقاً)
 window.fbLogin = () => showToast("خدمة فيسبوك ستتوفر قريباً");
 window.githubLogin = () => showToast("خدمة جيت هاب ستتوفر قريباً");
+// ميزة تسجيل حساب جديد بالإيميل والباسورد
+const signUpForm = document.querySelector('.sign-up form');
+if (signUpForm) {
+    signUpForm.addEventListener('submit', (e) => {
+        e.preventDefault(); // منع الصفحة من التحميل
+
+        const name = signUpForm.querySelector('input[type="text"]').value;
+        const email = signUpForm.querySelector('input[type="email"]').value;
+        const password = signUpForm.querySelector('input[type="password"]').value;
+
+        // دالة Firebase لإنشاء مستخدم جديد
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                localStorage.setItem('user_name', name); // حفظ الاسم
+                showToast("تم إنشاء الحساب بنجاح!");
+                
+                setTimeout(() => {
+                    window.location.replace("https://ahmedmimo323.github.io/sana/");
+                }, 1500);
+            })
+            .catch((error) => {
+                console.error("Sign Up Error:", error.code);
+                if (error.code === 'auth/email-already-in-use') {
+                    showToast("هذا الإيميل مستخدم بالفعل!");
+                } else {
+                    showToast("خطأ: " + error.message);
+                }
+            });
+    });
+}
