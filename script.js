@@ -1,6 +1,6 @@
 // استيراد مكتبات Firebase اللازمة
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithCredential } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithCredential, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
 // إعدادات Firebase الخاصة بمشروع (Sanad Platform)
 // ملاحظة: تم التأكد من مفتاح الـ API وتصحيحه (حرف O بدلاً من الصفر)
