@@ -107,24 +107,24 @@ window.handleCredentialResponse = (response) => {
 window.fbLogin = () => showToast("خدمة فيسبوك ستتوفر قريباً");
 window.githubLogin = () => showToast("خدمة جيت هاب ستتوفر قريباً");
 // ميزة تسجيل حساب جديد بالإيميل والباسورد
+// ميزة تسجيل حساب جديد بالإيميل والباسورد
 const signUpForm = document.querySelector('.sign-up form');
 if (signUpForm) {
     signUpForm.addEventListener('submit', (e) => {
-        e.preventDefault(); // منع الصفحة من التحميل
+        e.preventDefault();
 
         const name = signUpForm.querySelector('input[type="text"]').value;
         const email = signUpForm.querySelector('input[type="email"]').value;
         const password = signUpForm.querySelector('input[type="password"]').value;
 
-        // دالة Firebase لإنشاء مستخدم جديد
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                const user = userCredential.user;
-                localStorage.setItem('user_name', name); // حفظ الاسم
-                showToast("تم إنشاء الحساب بنجاح!");
-                
+                showToast("تم إنشاء الحساب بنجاح! سجل دخولك الآن");
+
+                // بدلاً من الانتقال للمنصة، سنقوم بالتبديل لشاشة Sign In
                 setTimeout(() => {
-                    window.location.replace("https://ahmedmimo323.github.io/sana/");
+                    const container = document.getElementById('container');
+                    container.classList.remove("active"); // هذا السطر سيعيد الأنيميشن لليسار (Sign In)
                 }, 1500);
             })
             .catch((error) => {
@@ -132,7 +132,7 @@ if (signUpForm) {
                 if (error.code === 'auth/email-already-in-use') {
                     showToast("هذا الإيميل مستخدم بالفعل!");
                 } else {
-                    showToast("خطأ: " + error.message);
+                    showToast("خطأ في البيانات، حاول مرة أخرى");
                 }
             });
     });
