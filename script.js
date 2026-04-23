@@ -1,26 +1,60 @@
+/**
+ * 1. دالة التنبيه (Toast) - وضعناها في البداية لتكون متاحة للجميع
+ */
+function showToast(message, callback) {
+    const toast = document.createElement('div');
+    toast.className = 'custom-toast';
+    toast.innerText = message;
+    document.body.appendChild(toast);
+
+    // تختفي الرسالة بعد 2 ثانية
+    setTimeout(() => {
+        toast.classList.add('hide');
+        setTimeout(() => {
+            toast.remove();
+            if (callback) callback();
+        }, 500);
+    }, 2000);
+}
+
+/**
+ * 2. الدوال العالمية الخاصة بـ Google و Facebook
+ */
+function handleCredentialResponse(response) {
+    try {
+        const payload = JSON.parse(window.atob(response.credential.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+        localStorage.setItem('user_name', payload.name);
+        
+        showToast(`مرحباً بك يا ${payload.name}! تم الدخول بواسطة Google`, () => {
+            window.location.href = "https://ahmedmimo323.github.io/sana/";
+        });
+    } catch (e) {
+        showToast("فشل تسجيل الدخول عبر جوجل");
+    }
+}
+
+function fbLogin() {
+    FB.login(function(response) {
+        if (response.status === 'connected') {
+            FB.api('/me', {fields: 'name'}, function(userData) {
+                localStorage.setItem('user_name', userData.name);
+                showToast("تم الدخول بواسطة Facebook", () => {
+                    window.location.href = "https://ahmedmimo323.github.io/sana/";
+                });
+            });
+        }
+    }, {scope: 'public_profile,email'});
+}
+
+/**
+ * 3. تشغيل الكود عند تحميل الصفحة
+ */
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('container');
     const registerBtn = document.getElementById('register');
     const loginBtn = document.getElementById('login');
 
-    // دالة التنبيه المؤقت (Toast)
-    function showToast(message, callback) {
-        const toast = document.createElement('div');
-        toast.className = 'custom-toast';
-        toast.innerText = message;
-        document.body.appendChild(toast);
-
-        // تختفي الرسالة بعد 2 ثانية ويتم تنفيذ الأكشن بعدها
-        setTimeout(() => {
-            toast.classList.add('hide');
-            setTimeout(() => {
-                toast.remove();
-                if (callback) callback();
-            }, 500);
-        }, 2000);
-    }
-
-    // أزرار التبديل
+    // أزرار التبديل بين Sign In و Sign Up
     if(registerBtn) registerBtn.onclick = () => container.classList.add("active");
     if(loginBtn) loginBtn.onclick = () => container.classList.remove("active");
 
@@ -83,39 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-
-// وظيفة دخول جوجل (خارج النطاق لتكون عالمية)
-function handleCredentialResponse(response) {
-    const payload = JSON.parse(window.atob(response.credential.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
-    localStorage.setItem('user_name', payload.name);
-    
-    const toast = document.createElement('div');
-    toast.className = 'custom-toast';
-    toast.innerText = "مرحباً بك! تم الدخول بواسطة Google";
-    document.body.appendChild(toast);
-
-    setTimeout(() => {
-        window.location.href = "https://ahmedmimo323.github.io/sana/";
-    }, 2000);
-}
-
-// وظيفة فيسبوك
-function fbLogin() {
-    FB.login(function(response) {
-        if (response.status === 'connected') {
-            FB.api('/me', {fields: 'name'}, function(userData) {
-                localStorage.setItem('user_name', userData.name);
-                const toast = document.createElement('div');
-                toast.className = 'custom-toast';
-                toast.innerText = "تم الدخول بواسطة Facebook";
-                document.body.appendChild(toast);
-                setTimeout(() => {
-                    window.location.href = "https://ahmedmimo323.github.io/sana/";
-                }, 2000);
-            });
-        }
-    }, {scope: 'public_profile,email'});
-}
 
 function githubLogin() {
     const CLIENT_ID = "Ov23liDgL358vg1eGya4"; 
