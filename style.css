@@ -263,3 +263,30 @@ body {
     .toggle-container { display: none; }
     .form-container { width: 100%; }
 }
+/* حافظ على كل الأكواد السابقة كما هي وأضف هذه الأسطر في نهاية الملف */
+
+.strength-meter {
+    width: 100%;
+    height: 6px;
+    background-color: var(--input-bg);
+    border-radius: 10px;
+    margin: 5px 0 10px;
+    overflow: hidden;
+    display: none;
+}
+
+.strength-bar {
+    height: 100%;
+    width: 0%;
+    transition: width 0.4s ease, background-color 0.4s ease;
+}
+
+/* حالات القوة */
+.weak { background-color: #ff4d4d; width: 33.33%; }
+.medium { background-color: #ffd633; width: 66.66%; }
+.strong { background-color: #2eb82e; width: 100%; }
+
+/* لضمان تناسق التنبيه في الوضع الليلي */
+@media (prefers-color-scheme: dark) {
+    .strength-meter { background-color: #334155; }
+}
