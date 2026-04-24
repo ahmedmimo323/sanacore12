@@ -62,15 +62,15 @@ document.addEventListener('DOMContentLoaded', () => {
             strengthBar.className = 'strength-bar';
             if (score <= 2) {
                 strengthBar.classList.add('weak');
-                strengthText.innerText = "ضعيفة جداً ❌";
+                strengthText.innerText = "weakاً ❌";
                 strengthText.style.color = "#ff4d4d";
             } else if (score === 3) {
                 strengthBar.classList.add('medium');
-                strengthText.innerText = "متوسطة.. أضف رموزاً ⚠️";
+                strengthText.innerText = "medium.. ADD symbols ⚠️";
                 strengthText.style.color = "#cca300";
             } else {
                 strengthBar.classList.add('strong');
-                strengthText.innerText = "كلمة مرور قوية! ✅";
+                strengthText.innerText = "strong ✅";
                 strengthText.style.color = "#2eb82e";
             }
         });
