@@ -28,11 +28,9 @@
                 <div class="input-group">
                     <input type="text" placeholder="Name" id="reg-name-input" required>
                 </div>
-
                 <div class="input-group">
-                    <input type="email" placeholder="Email" required>
+                    <input type="email" placeholder="Email" id="reg-email" required>
                 </div>
-
                 <div class="input-group">
                     <input type="password" placeholder="Password" id="reg-pass" required>
                     <i class="fa-solid fa-eye toggle-password" data-target="reg-pass"></i>
@@ -43,7 +41,7 @@
                 </div>
                 <span id="strength-text" style="font-size: 10px; margin-top: -5px; display: none;"></span>
 
-                <button type="submit" id="sign-up-btn">Sign Up</button>
+                <button type="submit">Sign Up</button>
             </form>
         </div>
 
@@ -54,12 +52,12 @@
                     <div class="g_id_signin" data-type="icon" data-shape="circle" data-theme="outline"></div>
                 </div>
                 <span>or use your email password</span>
-                <input type="email" placeholder="Email" required>
+                <input type="email" placeholder="Email" id="login-email" required>
                 <div class="input-group">
                     <input type="password" placeholder="Password" id="login-pass" required>
                     <i class="fa-solid fa-eye toggle-password" data-target="login-pass"></i>
                 </div>
-                <a href="#" class="forgot">Forgot Your Password?</a>
+                <a href="#" class="forgot" id="forgot-password">Forgot Your Password?</a>
                 <button type="submit">Sign In</button>
             </form>
         </div>
