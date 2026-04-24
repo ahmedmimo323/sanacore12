@@ -125,14 +125,18 @@ body {
 }
 
 /* تحسين شكل المدخلات */
-#reg-name {
-    margin-bottom: 15px !important; 
-    margin-top: 8px !important;
-}
+/* هذا الجزء هو المسؤول عن توزيع المسافات بين الخانات بالتساوي */
 .input-group {
     position: relative;
     width: 100%;
-    margin: 8px 0 !important;
+    margin: 10px 0 !important; /* هذه هي المسافة التي تضبط التوازن (10 بكسل فوق وتحت) */
+    display: flex;
+    align-items: center;
+}
+
+/* لضمان أن الاسم لا يأخذ مسافات إضافية تفسد الشكل */
+#reg-name-input {
+    margin: 0 !important;
 }
 
 .container input {
