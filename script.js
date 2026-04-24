@@ -128,7 +128,7 @@ window.handleCredentialResponse = (response) => {
             localStorage.setItem('isLoggedIn', 'true');
             
             // 2. إظهار رسالة النجاح
-            showToast(`مرحباً ${user.displayName}! جاري توجيهك...`);
+            showToast(`لحياة افضل  ${user.displayName}! مرحباً...`);
             
             // 3. تعطيل الاختيار التلقائي لجوجل
             if (window.google && google.accounts && google.accounts.id) {
