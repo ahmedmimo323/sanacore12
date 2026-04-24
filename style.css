@@ -1,14 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 
 :root {
-    --bg-color: #c9d6ff;
+    --bg-color: #fce4ec; /* لون خلفية الصفحة وردي فاتح جداً */
     --container-bg: #ffffff;
     --text-main: #333333;
     --text-span: #666666;
-    --input-bg: #eeeeee;
-    --btn-bg: #512da8;
-    --toggle-gradient: linear-gradient(to right, #5c6bc0, #512da8);
-    --toast-bg: #512da8; /* لون التنبيه */
+    --input-bg: #f8f9fa;
+    --btn-bg: #f8bbd0; /* لون الـ Powder Pink الأساسي للأزرار */
+    --toggle-gradient: linear-gradient(to right, #ffc1e3, #f8bbd0); /* تدرج وردي ناعم */
+    --toast-bg: #f8bbd0; 
 }
 
 /* التبديل التلقائي للوضع الليلي بناءً على إعدادات الجهاز */
@@ -98,7 +98,7 @@ body {
 
 .container button {
     background-color: var(--btn-bg);
-    color: #fff;
+    color: #4a4a4a;
     font-size: 12px;
     padding: 10px 45px;
     border: 1px solid transparent;
@@ -112,8 +112,11 @@ body {
 }
 
 .container button:active { transform: scale(0.95); }
-.container button.hidden { background-color: transparent; border-color: #fff; }
-
+.container button.hidden {
+    background-color: transparent;
+    border-color: #4a4a4a;
+    color: #4a4a4a;
+}
 .container form {
     background-color: var(--container-bg);
     display: flex;
@@ -226,7 +229,7 @@ body {
     background-color: var(--btn-bg);
     height: 100%;
     background: var(--toggle-gradient);
-    color: #fff;
+    color: #4a4a4a;
     position: relative;
     left: -100%;
     width: 200%;
