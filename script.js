@@ -1,8 +1,6 @@
-// استيراد مكتبات Firebase اللازمة
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithCredential, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
-// إعدادات Firebase الخاصة بمشروع (Sanad Platform)
 const firebaseConfig = {
     apiKey: "AIzaSyCTAp16kn8Z27O2G7wK9H-a3bW9hiNKU9A", 
     authDomain: "sanad-platform-493800.firebaseapp.com",
@@ -13,35 +11,25 @@ const firebaseConfig = {
     measurementId: "G-KNCPYKZ7KH"
 };
 
-// تهيئة Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-/**
- * دالة لإظهار التنبيهات (Toast) 
- */
 function showToast(message) {
     const toast = document.createElement('div');
     toast.className = 'custom-toast';
     toast.innerText = message;
     document.body.appendChild(toast);
-    
     setTimeout(() => {
         toast.classList.add('hide');
         setTimeout(() => toast.remove(), 500);
     }, 3000);
 }
 
-/**
- * معالجة أحداث الواجهة (DOM) عند تحميل الصفحة
- */
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. تنظيف أي جلسة معلقة فور فتح الصفحة لضمان عمل الدخول في كل مرة
     if (typeof auth !== 'undefined') {
         auth.signOut().then(() => console.log("Session Cleaned"));
     }
 
-    // 2. تعريف عناصر الأنيميشن
     const container = document.getElementById('container');
     const registerBtn = document.getElementById('register');
     const loginBtn = document.getElementById('login');
@@ -53,96 +41,94 @@ document.addEventListener('DOMContentLoaded', () => {
         loginBtn.addEventListener('click', () => container.classList.remove("active"));
     }
 
-    // 3. كود إظهار/إخفاء كلمة المرور
+    // --- نظام قوة كلمة المرور ---
+    const regPassInput = document.getElementById('reg-pass');
+    const strengthBar = document.getElementById('strength-bar');
+    const strengthText = document.getElementById('strength-text');
+    const strengthMeter = document.querySelector('.strength-meter');
+
+    if (regPassInput) {
+        regPassInput.addEventListener('input', () => {
+            const val = regPassInput.value;
+            strengthMeter.style.display = val.length > 0 ? 'block' : 'none';
+            strengthText.style.display = val.length > 0 ? 'block' : 'none';
+            
+            let score = 0;
+            if (val.length >= 8) score++;
+            if (/[A-Z]/.test(val)) score++;
+            if (/[0-9]/.test(val)) score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
+
+            strengthBar.className = 'strength-bar';
+            if (score <= 2) {
+                strengthBar.classList.add('weak');
+                strengthText.innerText = "ضعيفة جداً ❌";
+                strengthText.style.color = "#ff4d4d";
+            } else if (score === 3) {
+                strengthBar.classList.add('medium');
+                strengthText.innerText = "متوسطة.. أضف رموزاً ⚠️";
+                strengthText.style.color = "#cca300";
+            } else {
+                strengthBar.classList.add('strong');
+                strengthText.innerText = "كلمة مرور قوية! ✅";
+                strengthText.style.color = "#2eb82e";
+            }
+        });
+    }
+
+    // --- باقي الوظائف (إظهار الباسورد، التسجيل، الدخول) ---
     document.querySelectorAll('.toggle-password').forEach(icon => {
         icon.addEventListener('click', function() {
             const inputId = this.getAttribute('data-target');
             const input = document.getElementById(inputId);
-            if (input.type === 'password') {
-                input.type = 'text';
-                this.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                input.type = 'password';
-                this.classList.replace('fa-eye-slash', 'fa-eye');
-            }
+            input.type = input.type === 'password' ? 'text' : 'password';
+            this.classList.toggle('fa-eye-slash');
+            this.classList.toggle('fa-eye');
         });
     });
 
-    // 4. ميزة تسجيل حساب جديد بالإيميل والباسورد
     const signUpForm = document.querySelector('.sign-up form');
     if (signUpForm) {
         signUpForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const email = signUpForm.querySelector('input[type="email"]').value;
-            const password = signUpForm.querySelector('input[type="password"]').value;
+            const password = regPassInput.value;
 
             createUserWithEmailAndPassword(auth, email, password)
                 .then(() => {
-                    showToast("تم إنشاء الحساب بنجاح! سجل دخولك الآن");
+                    showToast("تم إنشاء الحساب بنجاح!");
                     setTimeout(() => container.classList.remove("active"), 1500);
                 })
                 .catch((error) => {
-                    console.error("Sign Up Error:", error.code);
-                    if (error.code === 'auth/email-already-in-use') {
-                        showToast("هذا الإيميل مستخدم بالفعل!");
-                    } else {
-                        showToast("خطأ في البيانات، حاول مرة أخرى");
-                    }
+                    showToast(error.code === 'auth/email-already-in-use' ? "الإيميل مستخدم!" : "خطأ في البيانات");
                 });
         });
     }
 
-    // 5. ميزة تسجيل الدخول العادي بالإيميل والباسورد
     const signInForm = document.querySelector('.sign-in form');
     if (signInForm) {
         signInForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const email = signInForm.querySelector('input[type="email"]').value;
-            const password = signInForm.querySelector('input[type="password"]').value;
-
+            const password = signInForm.querySelector('input[id="login-pass"]').value;
             signInWithEmailAndPassword(auth, email, password)
                 .then((result) => {
-                    showToast("تم تسجيل الدخول بنجاح!");
+                    showToast("تم تسجيل الدخول!");
                     localStorage.setItem('user_name', result.user.email.split('@')[0]);
                     setTimeout(() => window.location.href = "https://ahmedmimo323.github.io/sana/", 1500);
                 })
-                .catch(() => showToast("بيانات الدخول غير صحيحة"));
+                .catch(() => showToast("بيانات الدخول خاطئة"));
         });
     }
 });
 
-/**
- * معالجة الرد القادم من Google Identity Services
- */
-// استبدل دالة handleCredentialResponse في ملفك بهذا الكود المحدث:
-
 window.handleCredentialResponse = (response) => {
     const credential = GoogleAuthProvider.credential(response.credential);
-    
     signInWithCredential(auth, credential)
         .then((result) => {
-            const user = result.user;
-            
-            // 1. حفظ البيانات محلياً
-            localStorage.setItem('user_name', user.displayName);
-            localStorage.setItem('isLoggedIn', 'true');
-            
-            // 2. إظهار رسالة النجاح
-            showToast(`لحياة افضل  ${user.displayName}! مرحباً...`);
-            
-            // 3. تعطيل الاختيار التلقائي لجوجل
-            if (window.google && google.accounts && google.accounts.id) {
-                google.accounts.id.disableAutoSelect();
-            }
-
-            // 4. الحل النهائي للانتقال (استخدام assign لضمان التوجيه القسري)
-            setTimeout(() => {
-                console.log("Redirecting to Sana platform...");
-                window.location.assign("https://ahmedmimo323.github.io/sana/");
-            }, 1000);
+            localStorage.setItem('user_name', result.user.displayName);
+            showToast(`مرحباً ${result.user.displayName}`);
+            setTimeout(() => window.location.assign("https://ahmedmimo323.github.io/sana/"), 1000);
         })
-        .catch((error) => {
-            console.error("Firebase Auth Error:", error.code, error.message);
-            showToast("حدث خطأ في المصادقة، حاول مرة أخرى.");
-        });
+        .catch(() => showToast("خطأ في جوجل"));
 };
