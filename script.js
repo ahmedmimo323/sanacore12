@@ -39,29 +39,34 @@ function showToast(message) {
  * معالجة أحداث الواجهة (DOM) عند تحميل الصفحة
  */
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. تنظيف أي جلسة معلقة فور فتح الصفحة لضمان عمل الدخول في كل مرة
+    if (typeof auth !== 'undefined') {
+        auth.signOut().then(() => console.log("Session Cleaned"));
+    }
+
+    // 2. تعريف العناصر (يجب أن تكون داخل الدالة لضمان وجودها في الصفحة)
     const container = document.getElementById('container');
     const registerBtn = document.getElementById('register');
     const loginBtn = document.getElementById('login');
 
-    // التبديل بين Sign In و Sign Up (الأنيميشن)
-    if (registerBtn) {
+    // 3. منطق التبديل (الأنيميشن) بين Sign In و Sign Up
+    if (registerBtn && container) {
         registerBtn.addEventListener('click', () => {
             container.classList.add("active");
         });
     }
 
-    if (loginBtn) {
+    if (loginBtn && container) {
         loginBtn.addEventListener('click', () => {
             container.classList.remove("active");
         });
     }
 
-    // ميزة إظهار وإخفاء كلمة المرور للأيقونات التي تحمل كلاس .toggle-password
+    // 4. كود إظهار/إخفاء كلمة المرور (ضعه هنا أيضاً لتضمن عمله)
     document.querySelectorAll('.toggle-password').forEach(icon => {
         icon.addEventListener('click', function() {
             const inputId = this.getAttribute('data-target');
             const input = document.getElementById(inputId);
-            
             if (input.type === 'password') {
                 input.type = 'text';
                 this.classList.replace('fa-eye', 'fa-eye-slash');
@@ -71,8 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-});
 
+}); // نهاية دالةDOMContentLoaded الصحيحة (تأكد أنها في آخر الملف بعد كل الأوامر)
 /**
  * معالجة الرد القادم من Google Identity Services
  * يتم استدعاء هذه الدالة تلقائياً بواسطة مكتبة جوجل في الـ HTML
