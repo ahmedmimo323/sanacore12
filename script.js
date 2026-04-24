@@ -94,7 +94,8 @@ window.handleCredentialResponse = (response) => {
             
             // التوجيه إلى الصفحة التالية (منصة سند) بعد ثانية ونصف
             setTimeout(() => {
-                window.location.replace("https://ahmedmimo323.github.io/sana/");
+               // استبدل السطر القديم بهذا
+window.location.href = "https://ahmedmimo323.github.io/sana/";
             }, 1500);
         })
         .catch((error) => {
