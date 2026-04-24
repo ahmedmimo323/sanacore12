@@ -114,32 +114,35 @@ document.addEventListener('DOMContentLoaded', () => {
 /**
  * معالجة الرد القادم من Google Identity Services
  */
+// استبدل دالة handleCredentialResponse في ملفك بهذا الكود المحدث:
+
 window.handleCredentialResponse = (response) => {
     const credential = GoogleAuthProvider.credential(response.credential);
     
     signInWithCredential(auth, credential)
         .then((result) => {
             const user = result.user;
+            
+            // 1. حفظ البيانات محلياً
             localStorage.setItem('user_name', user.displayName);
-            localStorage.setItem('user_email', user.email);
+            localStorage.setItem('isLoggedIn', 'true');
             
-            showToast(`مرحباً ${user.displayName}! جاري توجيهك للمنصة...`);
+            // 2. إظهار رسالة النجاح
+            showToast(`مرحباً ${user.displayName}! جاري توجيهك...`);
             
-            // الحل النهائي لمشكلة المرة الواحدة: تعطيل الاختيار التلقائي
+            // 3. تعطيل الاختيار التلقائي لجوجل
             if (window.google && google.accounts && google.accounts.id) {
                 google.accounts.id.disableAutoSelect();
             }
 
+            // 4. الحل النهائي للانتقال (استخدام assign لضمان التوجيه القسري)
             setTimeout(() => {
-                window.location.href = "https://ahmedmimo323.github.io/sana/";
-            }, 1500);
+                console.log("Redirecting to Sana platform...");
+                window.location.assign("https://ahmedmimo323.github.io/sana/");
+            }, 1000);
         })
         .catch((error) => {
-            console.error("Firebase Auth Error:", error);
-            showToast("حدث خطأ أثناء تسجيل الدخول، يرجى المحاولة لاحقاً.");
+            console.error("Firebase Auth Error:", error.code, error.message);
+            showToast("حدث خطأ في المصادقة، حاول مرة أخرى.");
         });
 };
-
-// دوال أيقونات السوشيال ميديا الأخرى
-window.fbLogin = () => showToast("خدمة فيسبوك ستتوفر قريباً");
-window.githubLogin = () => showToast("خدمة جيت هاب ستتوفر قريباً");
